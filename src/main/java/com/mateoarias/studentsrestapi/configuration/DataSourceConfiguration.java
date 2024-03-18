@@ -7,26 +7,37 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/** Configuration class for the DataSource of the application. */
 @Configuration
-public class DataSourceConfiguration {
+class DataSourceConfiguration {
 
+  /** The DataSource URL taken from the application.properties file. */
   @Value("${spring.datasource.url}")
-  String dataSourceUrl;
+  private String dataSourceUrl;
 
+  /** The DataSource password taken from the application.properties file. */
   @Value("${spring.datasource.password}")
-  String dataSourcePassword;
+  private String dataSourcePassword;
 
+  /** The DataSource username taken from the application.properties file. */
   @Value("${spring.datasource.username}")
-  String dataSourceUsername;
+  private String dataSourceUsername;
 
+  /**
+   * The DataSource for the application built from the specified properties in the
+   * application.properties file. This specific DataSource is a connection pool one.
+   *
+   * @return The DataSource for the application built from the specified properties. Note that this
+   *     DataSource is a connection pool.
+   */
   @Bean
-  DataSource dataSource() {
-    var configuration = new HikariConfig();
+  DataSource connectionPoolDataSource() {
+    var hikariConfiguration = new HikariConfig();
 
-    configuration.setJdbcUrl(dataSourceUrl);
-    configuration.setUsername(dataSourceUsername);
-    configuration.setPassword(dataSourcePassword);
+    hikariConfiguration.setJdbcUrl(dataSourceUrl);
+    hikariConfiguration.setUsername(dataSourceUsername);
+    hikariConfiguration.setPassword(dataSourcePassword);
 
-    return new HikariDataSource(configuration);
+    return new HikariDataSource(hikariConfiguration);
   }
 }

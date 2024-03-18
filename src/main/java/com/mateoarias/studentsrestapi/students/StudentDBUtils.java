@@ -1,6 +1,6 @@
 package com.mateoarias.studentsrestapi.students;
 
-class StudentTableUtils {
+class StudentDBUtils {
 
   static final String FIRST_NAME = "first_name";
 

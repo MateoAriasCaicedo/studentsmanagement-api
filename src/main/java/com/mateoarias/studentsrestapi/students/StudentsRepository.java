@@ -1,7 +1,6 @@
 package com.mateoarias.studentsrestapi.students;
 
-import com.mateoarias.studentsrestapi.exception.DatabaseAccessException;
-
+import com.mateoarias.studentsrestapi.exceptions.DatabaseAccessException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -10,6 +9,7 @@ import javax.sql.DataSource;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
+/** Repository containing all the database operations to be used by the {@link StudentsService}. */
 @Repository
 class StudentsRepository {
 
@@ -27,11 +27,16 @@ class StudentsRepository {
 
   private final DataSource dataSource;
 
-  public StudentsRepository(DataSource dataSource) {
+  StudentsRepository(DataSource dataSource) {
     this.dataSource = dataSource;
   }
 
-  public void create(@NonNull StudentInformationDTO student) {
+  /**
+   * Creates a student.
+   *
+   * @param student The student.
+   */
+  void create(@NonNull StudentInformationDTO student) {
     try (var connection = dataSource.getConnection();
         var statement = connection.prepareStatement(INSERT_STUDENT)) {
       statement.setString(1, student.firstName());
@@ -43,7 +48,7 @@ class StudentsRepository {
     }
   }
 
-  public StudentInformationDTO delete(int id) {
+  StudentInformationDTO delete(int id) {
     StudentInformationDTO student = find(id);
 
     try (var connection = dataSource.getConnection();
@@ -101,7 +106,7 @@ class StudentsRepository {
     }
   }
 
-  public StudentInformationDTO find(int id)
+  StudentInformationDTO find(int id)
       throws StudentNotFoundException, NoUniqueStudentIdException, DatabaseAccessException {
 
     var foundStudents = findStudents(id);
@@ -117,7 +122,7 @@ class StudentsRepository {
     return foundStudents.get(0);
   }
 
-  public Collection<StudentInformationDTO> findAll(int limit) {
+  Collection<StudentInformationDTO> findAll(int limit) {
     try (var connection = dataSource.getConnection();
         var statement = connection.prepareStatement(FIND_ALL_WITH_LIMIT)) {
       statement.setInt(1, limit);
